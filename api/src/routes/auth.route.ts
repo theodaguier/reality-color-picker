@@ -8,7 +8,7 @@ const router = express.Router();
 
 const users: User[] = [];
 
-router.post("/auth/register", async (req: Request, res: Response) => {
+router.post("/api/auth/register", async (req: Request, res: Response) => {
   const { username, email, password } = req.body;
 
   const hashedPassword = await bcrypt.hash(password, 10);
@@ -26,7 +26,7 @@ router.post("/auth/register", async (req: Request, res: Response) => {
   res.status(201).json({ message: "User created successfully" });
 });
 
-router.post("/auth/login", async (req: Request, res: Response) => {
+router.post("/api/auth/login", async (req: Request, res: Response) => {
   const { email, password } = req.body;
 
   const user = await prisma.user.findUnique({
@@ -46,7 +46,7 @@ router.post("/auth/login", async (req: Request, res: Response) => {
   res.json({ accessToken });
 });
 
-router.get("/users", async (_req: Request, res: Response) => {
+router.get("/api/users", async (_req: Request, res: Response) => {
   const users = await prisma.user.findMany();
 
   if (!users) {

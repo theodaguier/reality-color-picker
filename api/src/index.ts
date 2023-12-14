@@ -1,6 +1,8 @@
 import express, { Request, Response } from "express";
 import dotenv from "dotenv";
 import authRouter from "./routes/auth.route";
+import uploadRouter from "./routes/upload.route";
+
 dotenv.config();
 
 const app = express();
@@ -16,4 +18,7 @@ app.listen(process.env.LOCAL_PORT, () => {
 });
 
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
 app.use(authRouter);
+app.use(uploadRouter);
