@@ -4,8 +4,11 @@ import { useAuth } from "./context/auth-context";
 import { router } from "expo-router";
 
 const Login = () => {
+  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  console.log("Login", { username, email, password });
 
   const { onLogin, onRegister } = useAuth();
 
@@ -14,11 +17,12 @@ const Login = () => {
     if (result && result.error) {
       alert(result.msg);
     }
-    router.replace("/(app)/index");
+
+    router.replace("/");
   };
 
   const register = async () => {
-    const result = await onRegister!(email, password);
+    const result = await onRegister!(username, email, password);
     if (result && result.error) {
       alert(result.msg);
     } else {
@@ -27,17 +31,41 @@ const Login = () => {
   };
 
   return (
-    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-      <Text
-        onPress={() => {
-          register();
-          // Navigate after signing in. You may want to tweak this to ensure sign-in is
-          // successful before navigating.
-          router.replace("/");
-        }}
-      >
-        Sign In
-      </Text>
+    <View className="flex flex-col items-center justify-center w-full h-full">
+      <Text className="text-4xl">Login</Text>
+      <TextInput
+        className="w-full p-2 my-2 border border-gray-400 rounded"
+        placeholder="Email"
+        value={email}
+        onChangeText={setEmail}
+      />
+      <TextInput
+        className="w-full p-2 my-2 border border-gray-400 rounded"
+        placeholder="Password"
+        value={password}
+        onChangeText={setPassword}
+      />
+      <Button title="Login" onPress={login} />
+      <Text className="text-4xl">Register</Text>
+      <TextInput
+        className="w-full p-2 my-2 border border-gray-400 rounded"
+        placeholder="Username"
+        value={username}
+        onChangeText={setUsername}
+      />
+      <TextInput
+        className="w-full p-2 my-2 border border-gray-400 rounded"
+        placeholder="Email"
+        value={email}
+        onChangeText={setEmail}
+      />
+      <TextInput
+        className="w-full p-2 my-2 border border-gray-400 rounded"
+        placeholder="Password"
+        value={password}
+        onChangeText={setPassword}
+      />
+      <Button title="Register" onPress={register} />
     </View>
   );
 };

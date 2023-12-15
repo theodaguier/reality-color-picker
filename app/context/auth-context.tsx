@@ -4,13 +4,17 @@ import * as SecureStore from "expo-secure-store";
 
 interface AuthProps {
   authState?: { token: string | null; authenticated: boolean | null };
-  onRegister?: (email: string, password: string) => Promise<any>;
+  onRegister?: (
+    username: string,
+    email: string,
+    password: string
+  ) => Promise<any>;
   onLogin?: (email: string, password: string) => Promise<any>;
   onLogout?: () => Promise<any>;
 }
 
-const TOKEN_KEY = "my-jwt";
-export const API_URL = "https://api.developbetterapps.com";
+const TOKEN_KEY = "your-secret-key";
+export const API_URL = "http://localhost:3000";
 const AuthContext = createContext<AuthProps>({});
 
 export const useAuth = () => {
@@ -39,31 +43,37 @@ export const AuthProvider = ({ children }: any) => {
     };
   }, []);
 
-  const register = async (email: string, password: string) => {
+  const register = async (
+    username: string,
+    email: string,
+    password: string
+  ) => {
+    console.log("body", username, email, password);
+
     try {
-      return await axios.post(`${API_URL}/users`, { email, password });
+      const result = await axios.post(`${API_URL}/auth/register`, {
+        username,
+        email,
+        password,
+      });
+      console.log("💫 ~ file AuthContext.tsx:41 ~ login ~ result:", result);
+      return result;
     } catch (e) {
+      console.error(e);
       return { error: true, msg: (e as any).response.data.msg };
     }
   };
 
   const login = async (email: string, password: string) => {
     try {
-      const result = await axios.post(`${API_URL}/users`, { email, password });
-
-      console.log("💫 ~ file AuthContext.tsx:41 ~ login ~ result:", result);
-
-      setAuthState({
-        token: result.data.token,
-        authenticated: true,
+      const result = await axios.post(`${API_URL}/auth/login`, {
+        email,
+        password,
       });
-
-      axios.defaults.headers.common[
-        "Authorization"
-      ] = `Bearer ${result.data.token}`;
-
-      await SecureStore.setItemAsync(TOKEN_KEY, result.data.token);
+      console.log("💫 ~ file AuthContext.tsx:41 ~ login ~ result:", result);
+      return result;
     } catch (e) {
+      console.error(e);
       return { error: true, msg: (e as any).response.data.msg };
     }
   };
